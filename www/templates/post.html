@@ -1,0 +1,18 @@
+<ion-modal-view>
+  <ion-header-bar>
+    <h1 class="title">Post</h1>
+    <div class="buttons">
+      <button class="button button-clear" ng-click="closePost()">Close</button>
+    </div>
+  </ion-header-bar>
+  <ion-content>
+    <form ng-submit="newPost()">
+      <!-- <div class="list"> -->
+        <textarea rows="10" autofocus placeholder="please input text here." ng-model="postData.content"></textarea>
+        <!-- <label class="item"> -->
+          <button class="button button-block button-positive" type="submit">OK</button>
+        <!-- </label> -->
+      <!-- </div> -->
+    </form>
+  </ion-content>
+</ion-modal-view>
