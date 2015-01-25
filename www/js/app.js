@@ -21,10 +21,15 @@ app.run(function($ionicPlatform) {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-    // sync local database with remote one on server
-    localDB.sync(remoteDB, {live: true})
+
+    function retryReplication() {
+      var timeout = 5000;
+      var backoff = 2;
+      // sync local database with remote one on server
+      localDB.sync(remoteDB, {live: true})
       .on('change', function (info) {
-        // handle change
+        // something changed, handle change
+        timeout = 5000;  // reset timer
         console.log("PouchDB SYNC changed");
       }).on('complete', function (info) {
         // handle complete
@@ -35,7 +40,19 @@ app.run(function($ionicPlatform) {
       }).on('error', function (err) {
         // handle error
         console.log("PouchDB SYNC error!");
+        console.log(err);
+        setTimeout(function() {
+          timeout *= backoff;
+          retryReplication();
+        }, timeout);
       });
+    }
+
+    localDB.info().then(function(info) {
+      console.log('Get DB info', info);
+    });
+
+    retryReplication();
   });
 });
 
