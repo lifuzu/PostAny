@@ -78,7 +78,7 @@ angular.module('starter.controllers', ['starter.factory'])
 .controller('PostlistsCtrl', function($scope, $rootScope, PouchDBListener) {
 
   $scope.$on('add', function(event, post) {
-    $rootScope.postlists.push(post);
+    $rootScope.postlists.unshift(post);
   });
 
   $scope.$on('delete', function(event, id) {
