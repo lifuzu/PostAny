@@ -6,6 +6,7 @@
 // 'starter.controllers' is found in controllers.js
 var app = angular.module('starter', ['ionic', 'starter.controllers']);
 
+PouchDB.debug.enable('*');
 var localDB = new PouchDB("postany", {auto_compaction: true});
 var remoteDB = new PouchDB("http://lab.weimed.com:5984/postany");
 
@@ -21,7 +22,20 @@ app.run(function($ionicPlatform) {
       StatusBar.styleDefault();
     }
     // sync local database with remote one on server
-    localDB.sync(remoteDB, {live: true});
+    localDB.sync(remoteDB, {live: true})
+      .on('change', function (info) {
+        // handle change
+        console.log("PouchDB SYNC changed");
+      }).on('complete', function (info) {
+        // handle complete
+        console.log("PouchDB SYNC completed");
+      }).on('uptodate', function (info) {
+        // handle up-to-date
+        console.log("PouchDB SYNC up-to-dated");
+      }).on('error', function (err) {
+        // handle error
+        console.log("PouchDB SYNC error!");
+      });
   });
 });
 
