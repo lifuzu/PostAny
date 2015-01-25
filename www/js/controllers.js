@@ -60,7 +60,12 @@ angular.module('starter.controllers', ['starter.factory'])
         if($rootScope.hasOwnProperty("postlists") !== true) {
             $rootScope.postlists = [];
         }
-        localDB.post($scope.postData, function (err, response) {
+        // switch post to put, the latter we need to create _id
+        if (!$scope.postData._id) {
+          $scope.postData._id = new Date().getTime() + '';
+        }
+        localDB.put($scope.postData, function (err, response) {
+          if (err) console.log(err); return;
           $scope.postData.content = "";
         });
     } else {
