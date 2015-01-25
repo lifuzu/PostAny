@@ -67,6 +67,7 @@ angular.module('starter.controllers', ['starter.factory'])
         localDB.post($scope.postData, function (err, response) {
           if (err) console.log(err);
           $scope.postData.content = "";
+          console.log("New Post Published!")
         });
     } else {
         console.log("Action not completed");
@@ -75,7 +76,7 @@ angular.module('starter.controllers', ['starter.factory'])
   };
 })
 
-.controller('PostlistsCtrl', function($scope, $rootScope, PouchDBListener) {
+.controller('PostlistsCtrl', function($scope, $rootScope, PouchDBListener, $timeout) {
 
   $scope.$on('add', function(event, post) {
     $rootScope.postlists.unshift(post);
@@ -88,6 +89,44 @@ angular.module('starter.controllers', ['starter.factory'])
       }
     }
   });
+
+  $scope.$on('scroll.refreshComplete', function(event) {
+    retryFetchReplication();
+  })
+
+  function retryFetchReplication() {
+      var timeout = 5000;
+      var backoff = 2;
+      // sync local database with remote one on server
+      localDB.replicate.from(remoteDB, {live: true})
+      .on('change', function (info) {
+        // something changed, handle change
+        timeout = 5000;  // reset timer
+        console.log("PouchDB SYNC changed");
+      }).on('complete', function (info) {
+        // handle complete
+        console.log("PouchDB SYNC completed");
+      }).on('uptodate', function (info) {
+        // handle up-to-date
+        console.log("PouchDB SYNC up-to-dated from Fetching.");
+      }).on('error', function (err) {
+        // handle error
+        console.log("PouchDB SYNC error!");
+        console.log(err);
+        setTimeout(function() {
+          timeout *= backoff;
+          retryFetchReplication();
+        }, timeout);
+      });
+    }
+
+  $scope.refreshTasks = function() {
+    console.log('Refreshing');
+
+    $timeout(function() {
+      $scope.$broadcast('scroll.refreshComplete');
+    }, 1250);
+  };
 })
 
 .controller('PostlistCtrl', function($scope, $stateParams) {

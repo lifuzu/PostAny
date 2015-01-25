@@ -22,37 +22,39 @@ app.run(function($ionicPlatform) {
       StatusBar.styleDefault();
     }
 
-    function retryReplication() {
-      var timeout = 5000;
-      var backoff = 2;
-      // sync local database with remote one on server
-      localDB.sync(remoteDB, {live: true})
-      .on('change', function (info) {
-        // something changed, handle change
-        timeout = 5000;  // reset timer
-        console.log("PouchDB SYNC changed");
-      }).on('complete', function (info) {
-        // handle complete
-        console.log("PouchDB SYNC completed");
-      }).on('uptodate', function (info) {
-        // handle up-to-date
-        console.log("PouchDB SYNC up-to-dated");
-      }).on('error', function (err) {
-        // handle error
-        console.log("PouchDB SYNC error!");
-        console.log(err);
-        setTimeout(function() {
-          timeout *= backoff;
-          retryReplication();
-        }, timeout);
-      });
-    }
+    // TODO: it seems the following code can be removed the replication sync still happens
+    // function retryReplication() {
+    //   var timeout = 5000;
+    //   var backoff = 2;
+    //   // sync local database with remote one on server
+    //   var sync = localDB.sync(remoteDB, {live: true})
+    //   .on('change', function (info) {
+    //     // something changed, handle change
+    //     timeout = 5000;  // reset timer
+    //     console.log("PouchDB SYNC changed");
+    //   }).on('complete', function (info) {
+    //     // handle complete
+    //     console.log("PouchDB SYNC completed");
+    //   }).on('uptodate', function (info) {
+    //     // handle up-to-date
+    //     console.log("PouchDB SYNC up-to-dated");
+    //   }).on('error', function (err) {
+    //     // handle error
+    //     console.log("PouchDB SYNC error!");
+    //     console.log(err);
+    //     setTimeout(function() {
+    //       timeout *= backoff;
+    //       retryReplication();
+    //     }, timeout);
+    //   });
+    // }
 
     localDB.info().then(function(info) {
       console.log('Get DB info', info);
     });
 
-    retryReplication();
+    // retryReplication();
+    // sync.cancel();
   });
 });
 

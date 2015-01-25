@@ -1,5 +1,7 @@
 <ion-view view-title="Postlists">
   <ion-content>
+    <ion-refresher pulling-text="Pull To Refresh" on-refresh="refreshTasks()"
+      refreshing-text="Fetching ..." refreshing-icon="ion-loading-b"></ion-refresher>
     <ion-list>
       <ion-item ng-repeat="postlist in postlists" href="#/app/postlists/{{postlist.id}}">
         <div class="item-text-wrap">{{postlist.content | limitTo: 220}}</div>
