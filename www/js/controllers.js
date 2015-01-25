@@ -56,16 +56,16 @@ angular.module('starter.controllers', ['starter.factory'])
   // Perform the post action when the user submits the login form
   $scope.newPost = function() {
     console.log('Doing post', $scope.postData);
-    if($scope.postData && $scope.postData.content !== "") {
+    if($scope.postData && $scope.postData.content && $scope.postData.content !== "") {
         if($rootScope.hasOwnProperty("postlists") !== true) {
             $rootScope.postlists = [];
         }
         // switch post to put, the latter we need to create _id
-        if (!$scope.postData._id) {
-          $scope.postData._id = new Date().getTime() + '';
-        }
-        localDB.put($scope.postData, function (err, response) {
-          if (err) console.log(err); return;
+        // if (!$scope.postData._id) {
+        //   $scope.postData._id = new Date().getTime() + '';
+        // }
+        localDB.post($scope.postData, function (err, response) {
+          if (err) console.log(err);
           $scope.postData.content = "";
         });
     } else {
