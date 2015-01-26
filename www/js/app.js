@@ -6,7 +6,7 @@
 // 'starter.controllers' is found in controllers.js
 var app = angular.module('starter', ['ionic', 'starter.controllers']);
 
-PouchDB.debug.enable('*');
+//PouchDB.debug.enable('*');
 var localDB = new PouchDB("postany", {auto_compaction: true});
 var remoteDB = new PouchDB("http://lab.weimed.com:5984/postany");
 

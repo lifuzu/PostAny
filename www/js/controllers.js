@@ -1,6 +1,6 @@
 angular.module('starter.controllers', ['starter.factory'])
 
-.controller('AppCtrl', function($scope, $rootScope, $ionicModal, $timeout) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout) {
   // Form data for the login modal
   $scope.loginData = {};
 
@@ -34,7 +34,6 @@ angular.module('starter.controllers', ['starter.factory'])
 
   // Add a new post
   $scope.postData = {};
-  $rootScope.postlists = [];
 
   // Create the post modal that we will use later
   $ionicModal.fromTemplateUrl('templates/post.html', {
@@ -57,9 +56,7 @@ angular.module('starter.controllers', ['starter.factory'])
   $scope.newPost = function() {
     console.log('Doing post', $scope.postData);
     if($scope.postData && $scope.postData.content && $scope.postData.content !== "") {
-        if($rootScope.hasOwnProperty("postlists") !== true) {
-            $rootScope.postlists = [];
-        }
+
         // switch post to put, the latter we need to create _id
         // if (!$scope.postData._id) {
         //   $scope.postData._id = new Date().getTime() + '';
@@ -76,16 +73,33 @@ angular.module('starter.controllers', ['starter.factory'])
   };
 })
 
-.controller('PostlistsCtrl', function($scope, $rootScope, PouchDBListener, $timeout) {
+.controller('PostlistsCtrl', function($scope, PouchDBListener, $timeout) {
+  $scope.postlists = [];
+
+  // function map(doc) {
+  //   if (doc.content) {
+  //     emit(doc.content);
+  //   }
+  // }
+
+  // localDB.query({map: map}, {reduce: false}, function(err, response) {
+  //   if (err) console.log(err);
+  //   console.log("Query response");
+  //   //console.log(response.rows);
+  //   response.rows.map(function(r) {
+  //     console.log(r.key);
+  //     if (r) $scope.postlists.unshift({'content': r.key});
+  //   })
+  // });
 
   $scope.$on('add', function(event, post) {
-    $rootScope.postlists.unshift(post);
+    $scope.postlists.unshift(post);
   });
 
   $scope.$on('delete', function(event, id) {
-    for(var i = 0; i < $rootScope.postlists.length; i++) {
-      if($rootScope.postlists[i]._id === id) {
-        $rootScope.postlists.splice(i, 1);
+    for(var i = 0; i < $scope.postlists.length; i++) {
+      if($scope.postlists[i]._id === id) {
+        $scope.postlists.splice(i, 1);
       }
     }
   });
